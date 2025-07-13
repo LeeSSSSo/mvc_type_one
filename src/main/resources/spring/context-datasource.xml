@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ✅ Spring에서 Bean을 정의하는 XML 설정 파일 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,29 +10,45 @@
          http://www.springframework.org/schema/context 
          http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!-- DB 연결 설정 -->
+    <!-- ✅ 1. DB 연결 설정 -->
+    <!-- DriverManagerDataSource는 JDBC 연결을 위한 간단한 DataSource 구현체
+         DB 접속에 필요한 드라이버, URL, 계정 정보를 설정함 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <!-- 오라클 JDBC 드라이버 클래스 (ojdbc8.jar 필요) -->
         <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <!-- 접속 URL (로컬 오라클 DB의 XEPDB1 인스턴스) -->
         <property name="url" value="jdbc:oracle:thin:@//localhost:1521/XEPDB1" />
+        <!-- DB 사용자 계정 -->
         <property name="username" value="system" />
+        <!-- DB 비밀번호 -->
         <property name="password" value="1234" />
     </bean>
 
-
-  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!-- ✅ 2. MyBatis SqlSessionFactory 설정 -->
+    <!-- SqlSessionFactoryBean은 MyBatis와 Spring을 연결하는 핵심 Bean
+         여기서 DB 연결 정보와 매퍼 위치, 설정 등을 지정함 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 위에서 설정한 DataSource 주입 -->
         <property name="dataSource" ref="dataSource" />
+
+        <!-- MyBatis 매퍼 XML 파일 경로 설정 -->
+        <!-- classpath 기준으로 /mybatis/mapper 디렉토리 아래의 모든 .xml 파일을 매퍼로 등록 -->
         <property name="mapperLocations" value="classpath:/mybatis/mapper/*.xml" />
-        
-        <!-- 🔽 이 부분 추가 -->
+
+        <!-- ✅ MyBatis 전용 설정 추가 -->
         <property name="configuration">
             <bean class="org.apache.ibatis.session.Configuration">
+                <!-- DB 컬럼명이 snake_case일 경우, Java 필드명 camelCase와 자동 매핑되도록 설정 -->
+                <!-- 예: DB의 user_id → Java의 userId -->
                 <property name="mapUnderscoreToCamelCase" value="true"/>
             </bean>
         </property>
     </bean>
 
-    <!-- Mapper 자동 등록 -->
+    <!-- ✅ 3. Mapper 인터페이스 자동 등록 -->
+    <!-- MapperScannerConfigurer는 지정된 패키지의 @Mapper 또는 매퍼 인터페이스들을 찾아 자동 등록함 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- kdy.mapper 패키지 아래의 인터페이스를 모두 Mapper로 스캔하여 Spring 빈으로 등록 -->
         <property name="basePackage" value="kdy.mapper" />
     </bean>
 
