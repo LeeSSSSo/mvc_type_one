@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kdy.mapper.StudentMapper">
+
+	<select id="getStudentList" resultType="kdy.dto.StudentDto">
+		SELECT
+			student_id AS studentId,
+			name,
+			gender,
+			age,
+			department
+		FROM student
+		order by student_id desc
+	</select>
+
+	<insert id="insertStudent" parameterType="kdy.dto.StudentDto">
+		INSERT INTO student (
+			student_id, name, gender, age, department
+		) VALUES (
+			#{studentId}, #{name}, #{gender}, #{age}, #{department}
+		)
+	</insert>
+
+	<select id="getStudentById" parameterType="int" resultType="kdy.dto.StudentDto">
+		SELECT
+			student_id AS studentId,
+			name,
+			gender,
+			age,
+			department
+		FROM student
+		WHERE student_id = #{studentId}
+	</select>
+	
+	<update id="updateStudent" parameterType="kdy.dto.StudentDto">
+		UPDATE student
+		SET
+			name = #{name},
+			gender = #{gender},
+			age = #{age},
+			department = #{department}
+		WHERE student_id = #{studentId}
+	</update>
+	
+	<delete id="deleteStudent" parameterType="int">
+		DELETE FROM student WHERE student_id = #{studentId}
+	</delete>
+
+</mapper>
