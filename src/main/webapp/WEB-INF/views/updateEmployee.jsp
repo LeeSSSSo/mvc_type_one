@@ -1,30 +1,98 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>사원 수정</title>
+  <meta charset="UTF-8">
+  <title>사원 수정</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f6fa;
+      padding: 30px;
+    }
+
+    h2 {
+      color: #2f3640;
+    }
+
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 25px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #353b48;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #dcdde1;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #0984e3;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #74b9ff;
+    }
+  </style>
 </head>
 <body>
-<h2>사원 수정</h2>
-<form action="${pageContext.request.contextPath}/employee/update" method="post">
-  <input type="hidden" name="empId" value="${emp.empId}">
-  이름: <input type="text" name="empName" value="${emp.empName}" required><br>
-  주민번호: <input type="text" name="empNo" value="${emp.empNo}" required><br>
-  이메일: <input type="email" name="email" value="${emp.email}"><br>
-  전화번호: <input type="text" name="phone" value="${emp.phone}"><br>
-  직책: <input type="text" name="jobTitle" value="${emp.jobTitle}"><br>
-  부서번호: <input type="number" name="deptId" value="${emp.deptId}"><br>
-  급여: <input type="number" step="0.01" name="salary" value="${emp.salary}"><br>
-  재직여부: <select name="activeYn">
-    <option value="Y" ${emp.activeYn == 'Y' ? 'selected' : ''}>Y</option>
-    <option value="N" ${emp.activeYn == 'N' ? 'selected' : ''}>N</option>
-  </select><br>
-  <button type="submit">수정</button>
-</form>
+  <h2>사원 수정</h2>
+  <form action="${pageContext.request.contextPath}/employee/update" method="post">
+    <input type="hidden" name="empId" value="${emp.empId}">
+
+    <label for="empName">이름</label>
+    <input type="text" name="empName" id="empName" value="${emp.empName}" required>
+
+    <label for="empNo">주민번호</label>
+    <input type="text" name="empNo" id="empNo" value="${emp.empNo}" required>
+
+    <label for="email">이메일</label>
+    <input type="email" name="email" id="email" value="${emp.email}">
+
+    <label for="phone">전화번호</label>
+    <input type="text" name="phone" id="phone" value="${emp.phone}">
+
+    <label for="jobTitle">직책</label>
+    <input type="text" name="jobTitle" id="jobTitle" value="${emp.jobTitle}">
+
+    <label for="deptId">부서번호</label>
+    <input type="number" name="deptId" id="deptId" value="${emp.deptId}">
+
+    <label for="salary">급여</label>
+    <input type="number" step="0.01" name="salary" id="salary" value="${emp.salary}">
+
+    <label for="activeYn">재직여부</label>
+    <select name="activeYn" id="activeYn">
+      <option value="Y" ${emp.activeYn == 'Y' ? 'selected' : ''}>Y</option>
+      <option value="N" ${emp.activeYn == 'N' ? 'selected' : ''}>N</option>
+    </select>
+
+    <button type="submit">수정</button>
+  </form>
 </body>
 </html>

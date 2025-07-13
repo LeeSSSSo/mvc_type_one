@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Spring Bean 설정 파일 (dispatcher-servlet.xml) -->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
@@ -11,17 +14,29 @@
          http://www.springframework.org/schema/mvc 
          http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!-- 1. 컨트롤러가 있는 패키지 자동 스캔 -->
+    <!-- ✅ 1. 패키지 스캔 설정 -->
+    <!-- 지정된 패키지(kdy.controller) 하위에 있는 클래스들 중 @Controller, @Service, @Repository, @Component 등의
+         어노테이션이 붙은 클래스를 자동으로 빈으로 등록함 -->
     <context:component-scan base-package="kdy.controller" />
 
-    <!-- 2. @RequestMapping, @Controller 등 어노테이션 활성화 -->
+    <!-- ✅ 2. 어노테이션 기반 MVC 기능 활성화 -->
+    <!-- @Controller, @RequestMapping 등의 어노테이션을 사용한 MVC 컨트롤러 기능을 활성화함
+         내부적으로 HandlerMapping, HandlerAdapter, MessageConverter 등을 자동 등록 -->
     <mvc:annotation-driven />
-	
-	<import resource="classpath:spring/context-datasource.xml" />
-	
-    <!-- 3. 뷰 리졸버 설정 (JSP 경로 설정) -->
+
+    <!-- ✅ 3. 외부 XML 설정 파일 불러오기 (예: DB 설정) -->
+    <!-- classpath 기준으로 context-datasource.xml 파일을 import하여 DB 연결 등의 설정을 분리 관리함
+         이 방식은 설정 파일을 모듈화할 때 유용 -->
+    <import resource="classpath:spring/context-datasource.xml" />
+
+    <!-- ✅ 4. 뷰 리졸버(ViewResolver) 설정 -->
+    <!-- 컨트롤러에서 리턴하는 논리적 뷰 이름(String)을 실제 JSP 파일 경로로 매핑시켜주는 역할
+         예: return "home" → /WEB-INF/views/home.jsp 를 렌더링 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- prefix: JSP 파일의 경로 앞부분 -->
         <property name="prefix" value="/WEB-INF/views/" />
+        <!-- suffix: JSP 파일의 확장자 -->
         <property name="suffix" value=".jsp" />
     </bean>
+
 </beans>

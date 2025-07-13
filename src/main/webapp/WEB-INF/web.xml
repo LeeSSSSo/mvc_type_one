@@ -1,43 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- web.xml: Java 웹 애플리케이션의 핵심 설정 파일 -->
+
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <!-- ✅ 필터(Filter): 클라이언트 요청 및 응답을 가로채서 처리할 수 있는 컴포넌트 -->
+
     <!-- ✅ 한글 깨짐 방지용 필터 설정 -->
+    <!-- CharacterEncodingFilter는 요청(request) 및 응답(response)의 문자 인코딩을 강제로 UTF-8로 설정하여,
+         웹 페이지에서 한글이 깨지지 않도록 해주는 스프링 제공 필터 -->
     <filter>
-        <filter-name>encodingFilter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <filter-name>encodingFilter</filter-name> <!-- 필터의 이름 설정 -->
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class> <!-- 필터 클래스 지정 -->
+
+        <!-- 필터 초기화 파라미터: 문자 인코딩 방식 지정 -->
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
         </init-param>
+
+        <!-- forceEncoding이 true일 경우, 요청과 응답 모두 강제로 UTF-8로 설정 -->
         <init-param>
             <param-name>forceEncoding</param-name>
             <param-value>true</param-value>
         </init-param>
     </filter>
 
+    <!-- 필터 매핑 설정: 모든 요청(URL)에 대해 위의 필터를 적용함 -->
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/*</url-pattern> <!-- /* 은 전체 요청에 필터를 적용하겠다는 의미 -->
     </filter-mapping>
 
-    <!-- Spring DispatcherServlet 등록 -->
+
+    <!-- ✅ DispatcherServlet 등록 -->
+    <!-- DispatcherServlet은 스프링 MVC의 핵심 서블릿으로, 클라이언트 요청을 컨트롤러로 전달하고,
+         그 결과를 뷰로 연결하는 중앙 처리 역할을 담당 -->
+
     <servlet>
-        <servlet-name>dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-name>dispatcher</servlet-name> <!-- 서블릿 이름 설정 -->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> <!-- 스프링 DispatcherServlet 클래스 지정 -->
+
+        <!-- DispatcherServlet 초기화 시 참조할 스프링 설정 파일 경로 지정 -->
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
         </init-param>
+
+        <!-- load-on-startup: 서블릿이 서버 시작 시 초기화되도록 설정 (숫자가 작을수록 먼저 로드됨) -->
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <!-- DispatcherServlet 매핑 설정 -->
+    <!-- 모든 요청("/")을 DispatcherServlet이 처리하도록 매핑 -->
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/</url-pattern> <!-- /는 루트 경로로, 모든 요청을 의미 -->
     </servlet-mapping>
 
 </web-app>

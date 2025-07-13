@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ✅ dispatcher-servlet.xml: Spring MVC DispatcherServlet 설정 파일 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -11,19 +13,29 @@
          http://www.springframework.org/schema/mvc 
          http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-
- <!-- ✅ 여기에 추가 -->
+    <!-- ✅ 외부 설정 파일 가져오기 -->
+    <!-- DB 접속 설정, 트랜잭션 관리 등 별도로 정의한 context-datasource.xml 파일을 로드함
+         classpath 기준이 아닌 같은 디렉토리(/WEB-INF/dispatcher-servlet.xml 기준 상대경로)에서 찾음 -->
     <import resource="context-datasource.xml" />
 
-    <!-- 컨트롤러 자동 등록 -->
+    <!-- ✅ 컴포넌트 스캔 -->
+    <!-- kdy.controller 패키지 내부의 @Controller, @Service, @Repository, @Component 등의 클래스들을
+         자동으로 스프링 빈으로 등록함 -->
     <context:component-scan base-package="kdy.controller" />
 
-    <!-- @Controller, @RequestMapping 활성화 -->
+    <!-- ✅ 어노테이션 기반 MVC 설정 활성화 -->
+    <!-- @Controller, @RequestMapping, @PathVariable, @ResponseBody 등의 어노테이션 기능을 사용 가능하게 함
+         내부적으로 HandlerMapping, HandlerAdapter, MessageConverters 등을 자동 등록 -->
     <mvc:annotation-driven />
 
-    <!-- 뷰 리졸버 설정 -->
+    <!-- ✅ 뷰 리졸버(View Resolver) 설정 -->
+    <!-- 컨트롤러에서 반환하는 뷰 이름(String)을 실제 JSP 경로로 변환하는 역할
+         예: return "home" → /WEB-INF/views/home.jsp 를 렌더링하게 됨 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- JSP 파일의 경로 앞부분 -->
         <property name="prefix" value="/WEB-INF/views/" />
+        <!-- JSP 파일의 확장자 -->
         <property name="suffix" value=".jsp" />
     </bean>
+
 </beans>

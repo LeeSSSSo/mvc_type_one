@@ -1,71 +1,110 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- ✅ MyBatis Mapper XML 파일은 XML 문법을 따르며, DTD 선언으로 Mapper 스펙을 정의합니다 -->
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- ✅ mapper 태그: 이 XML 파일이 매핑할 인터페이스 명시 -->
 <mapper namespace="kdy.mapper.HelloMapper">
+    <!-- 
+        namespace는 Java의 Mapper 인터페이스 이름과 일치해야 합니다.
+        예: kdy.mapper.HelloMapper.java 인터페이스의 메서드와 이 XML의 SQL을 연결함
+    -->
 
-  <select id="getTime" resultType="String">
-    SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual
-  </select>
+    <!-- ✅ 1. 현재 시간 조회 (단일 문자열 결과 반환) -->
+    <select id="getTime" resultType="String">
+        <!-- 
+            id: Mapper 인터페이스에서 호출할 메서드 이름
+            resultType: 결과로 반환할 데이터 타입 (여기서는 문자열)
+        -->
+        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual
+        <!-- 오라클의 현재 시간을 포맷팅하여 문자열로 반환 -->
+    </select>
 
-  <select id="getEmployeeList" resultType="kdy.dto.EmployeeDto">
-    SELECT
-        emp_id,
-        emp_name,
-        emp_no,
-        email,
-        phone,
-        hire_date,
-        job_title,
-        dept_id,
-        salary,
-        active_yn
-    FROM employee
-  </select>
+    <!-- ✅ 2. 직원 목록 전체 조회 -->
+    <select id="getEmployeeList" resultType="kdy.dto.EmployeeDto">
+        <!-- 
+            resultType: 각각의 행이 EmployeeDto 객체로 매핑됨
+            DB 컬럼명과 DTO 필드명이 같아야 자동 매핑됨
+        -->
+        SELECT
+            emp_id,        -- 직원 ID
+            emp_name,      -- 직원 이름
+            emp_no,        -- 사번
+            email,         -- 이메일
+            phone,         -- 전화번호
+            hire_date,     -- 입사일
+            job_title,     -- 직무명
+            dept_id,       -- 부서 ID
+            salary,        -- 급여
+            active_yn      -- 재직 여부 (Y/N)
+        FROM employee
+    </select>
 
-  <insert id="insertEmployee" parameterType="kdy.dto.EmployeeDto">
-    INSERT INTO employee (
-        emp_name, emp_no, email, phone, hire_date,
-        job_title, dept_id, salary, active_yn
-    ) VALUES (
-        #{empName}, #{empNo}, #{email}, #{phone}, SYSDATE,
-        #{jobTitle}, #{deptId}, #{salary}, #{activeYn}
-    )
-  </insert>
+    <!-- ✅ 3. 직원 정보 추가 (insert) -->
+    <insert id="insertEmployee" parameterType="kdy.dto.EmployeeDto">
+        <!-- 
+            parameterType: 전달받는 파라미터 객체 타입 (EmployeeDto)
+            #{필드명}: 파라미터 객체의 프로퍼티 값을 바인딩함
+        -->
+        INSERT INTO employee (
+            emp_name, emp_no, email, phone, hire_date,
+            job_title, dept_id, salary, active_yn
+        ) VALUES (
+            #{empName}, #{empNo}, #{email}, #{phone}, SYSDATE,
+            #{jobTitle}, #{deptId}, #{salary}, #{activeYn}
+        )
+        <!-- hire_date는 DB 서버 시간으로 설정 -->
+    </insert>
 
-  <select id="getEmployeeById" parameterType="int" resultType="kdy.dto.EmployeeDto">
-    SELECT
-        emp_id,
-        emp_name,
-        emp_no,
-        email,
-        phone,
-        hire_date,
-        job_title,
-        dept_id,
-        salary,
-        active_yn
-    FROM employee
-    WHERE emp_id = #{empId}
-  </select>
+    <!-- ✅ 4. 직원 상세 조회 (PK 기준 조회) -->
+    <select id="getEmployeeById" parameterType="int" resultType="kdy.dto.EmployeeDto">
+        <!-- 
+            parameterType: int형 ID를 파라미터로 받음
+            resultType: 결과를 EmployeeDto로 매핑
+        -->
+        SELECT
+            emp_id,
+            emp_name,
+            emp_no,
+            email,
+            phone,
+            hire_date,
+            job_title,
+            dept_id,
+            salary,
+            active_yn
+        FROM employee
+        WHERE emp_id = #{empId}
+        <!-- #{empId}는 메서드 파라미터 int empId와 매핑됨 -->
+    </select>
 
-  <update id="updateEmployee" parameterType="kdy.dto.EmployeeDto">
-    UPDATE employee
-    SET
-        emp_name = #{empName},
-        emp_no = #{empNo},
-        email = #{email},
-        phone = #{phone},
-        job_title = #{jobTitle},
-        dept_id = #{deptId},
-        salary = #{salary},
-        active_yn = #{activeYn}
-    WHERE emp_id = #{empId}
-  </update>
+    <!-- ✅ 5. 직원 정보 수정 -->
+    <update id="updateEmployee" parameterType="kdy.dto.EmployeeDto">
+        <!-- 
+            update문: empId를 기준으로 나머지 필드들을 업데이트
+            전달받은 EmployeeDto 객체의 필드 값으로 매핑
+        -->
+        UPDATE employee
+        SET
+            emp_name = #{empName},
+            emp_no = #{empNo},
+            email = #{email},
+            phone = #{phone},
+            job_title = #{jobTitle},
+            dept_id = #{deptId},
+            salary = #{salary},
+            active_yn = #{activeYn}
+        WHERE emp_id = #{empId}
+        <!-- empId로 해당 직원만 수정 -->
+    </update>
 
-  <delete id="deleteEmployee" parameterType="int">
-    DELETE FROM employee WHERE emp_id = #{empId}
-  </delete>
+    <!-- ✅ 6. 직원 삭제 -->
+    <delete id="deleteEmployee" parameterType="int">
+        <!-- 
+            delete문: empId를 파라미터로 받아 해당 직원 레코드를 삭제
+        -->
+        DELETE FROM employee WHERE emp_id = #{empId}
+    </delete>
 
 </mapper>
